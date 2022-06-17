@@ -19,6 +19,7 @@
   <script src='https://kit.fontawesome.com/44f674442e.js'></script>
   <button id='record_button'>Record</button>
   <button id='toggle_button'>Full screen</button>
+  <button onclick='take_screen_shot()'>Take</button>
 <script type="text/javascript">
   let constraints;
   let stream;
@@ -55,6 +56,7 @@ function record_video(){
      document.body.appendChild(a)
      const video = document.createElement('video')
      video.src = URL.createObjectURL(event.data);
+     console.log( URL.createObjectURL(event.data))
      toggle_button.onclick = ()=>{togglescreen(video)}
      //set controls property for video which makes user able to control the video element
      video.setAttribute('controls','controls')
@@ -64,6 +66,30 @@ function record_video(){
    console.log(recording,recording.state)
    setTimeout(()=>recording.stop(),2000)
   
+}
+
+function take_screen_shot(){
+  const canvas = document.createElement('canvas')
+  canvas.width = 640;
+  canvas.height  =480;
+  const context = canvas.getContext('2d')
+  context.drawImage(video,0,0,canvas.width,canvas.height)
+    canvas.toBlob(function(blob){
+    var form = new FormData(),
+     request = new XMLHttpRequest();
+
+    form.append("image", blob, "filename.png");
+    request.open("POST", "/upload", true);
+    request.send(form);
+}, "image/png");
+  const dataURL = canvas.toDataURL('image/jpg')
+  console.log(dataURL)
+   const a = document.createElement('a')
+     a.download  = 'videosksk.jpg';
+     a.href = dataURL
+     a.textContent = a.download;
+     document.body.appendChild(a)
+
 }
 
 
