@@ -58,6 +58,34 @@
   <button id='toggle_button'>Full screen</button>
   <button onclick='take_screen_shot()'>Take</button>
   <button id='screen_capture_button'>Take</button>
+
+  <script id='convert_webcam_to_mp4_worker' type='javascript/worker'>
+      importScripts('https://archive.org/download/ffmpeg_asm/ffmpeg_asm.js')
+      const startTime = performance.now();
+
+      function print(text) {postMessage({"type" : "stdout","data" : text});};
+     self.onmessage = function(event) {
+  var message = event.data;
+  if (message.type === "command") {
+    var Module = {
+      print: print,
+      printErr: print,
+      files: message.files || [],
+      arguments: message.arguments || [],
+      TOTAL_MEMORY: message.TOTAL_MEMORY || false
+    };
+    var totalTime = performance.now() - startTime
+    var result = ffmpeg_run(Module);
+
+    postMessage({
+      "type": "done",
+      "data": result,
+      "time": totalTime
+    });
+  }
+};
+
+  </script>
 <script type="text/javascript">
 /* 
 ask for user permissin first to prevent future asking 
@@ -69,15 +97,16 @@ ask for user permissin first to prevent future asking
       video:true,
     })
 });*/
-  let constraints,stream,previous_URL;
+  let constraints,stream,previous_URL,strem;
   const record_button = document.querySelector('#record_button');
+  const parent_of_record_button = document.querySelector('#parent_div')
   const toggle_button = document.querySelector('i.fas.fa-expand');
   const screen_capture_button = document.querySelector('#screen_capture_button')
   const cursor_checkbox = document.querySelector('#cursor_checkbox')
    //the default value for displaying cursor is always 
   let is_display_cursor = "always"
  constraints = { audio: false, video: { width: 1280, height: 720 } };
-
+ let video_recording;
 
   const video = document.querySelector('video')
 
@@ -102,25 +131,141 @@ navigator.mediaDevices.getUserMedia(constraints)
 })
 })
 
-record_button.addEventListener('click',function(){
+parent_of_record_button.addEventListener('click',function(){
     if(!record_button.classList.contains('active')){
         record_button.classList.add('active');
-        record_video();
+        start_video();
     }else{
         record_button.classList.remove('active')
+        stop_video();
     }
 })
 
-function record_video(){
-   const recording = new MediaRecorder(stream,{
+function start_video(){
+   video_recording = new MediaRecorder(stream,{
     mimeType: "video/webm",
   })
    let data = [];
-   recording.ondataavailable = event =>{
+  video_recording.ondataavailable = event =>{
     data.push(event.data)
+    convertStreams(new Blob([event.data], {
+        //type: 'video/x-matroska;codecs=avc1'
+    type: "video/x-matroska;codecs=avc1"
+
+}
+))
     create_video(event.data,"untitle.webm")
    } 
-  recording.start();
+  video_recording.start();
+}
+
+  var workerPath = 'https://archive.org/download/ffmpeg_asm/ffmpeg_asm.js';
+                if(document.domain == 'localhost') {
+                    workerPath = location.href.replace(location.href.split('/').pop(), '') + 'ffmpeg_asm.js';
+                }
+
+                function processInWebWorker() {
+                    var blob = URL.createObjectURL(new Blob([document.querySelector('#convert_webcam_to_mp4_worker').textContent], {
+                        type: 'application/javascript'
+                    }));
+
+                    var worker = new Worker(blob);
+                    URL.revokeObjectURL(blob);
+                    return worker;
+                }
+
+                var worker;
+
+                function convertStreams(videoBlob) {
+                    console.log(videoBlob)
+                    window.aab;
+                    var buffersReady;
+                    var workerReady;
+                    var posted;
+
+                    var fileReader = new FileReader();
+                    fileReader.onload = function() {
+                        aab = this.result;
+                        postMessage();
+                    };
+                    fileReader.readAsArrayBuffer(videoBlob);
+
+                    if (!worker) {
+                        worker = processInWebWorker();
+                    }
+
+                    worker.onmessage = function(event) {
+                        var message = event.data;
+                        if (message.type == "ready") {
+                            console.log('<a href="'+ workerPath +'" download="ffmpeg-asm.js">ffmpeg-asm.js</a> file has been loaded.');
+
+                            workerReady = true;
+                            if (buffersReady)
+                                postMessage();
+                        } else if (message.type == "done") {
+              
+                            var result = message.data[0];
+                            console.log(JSON.stringify(result));
+
+                            var blob = new File([result.data], 'test.mp4', {
+                                type: 'video/mp4'
+                            });
+                           PostBlob(blob)
+}
+}
+}  
+               function PostBlob(blob) {
+                    var video = document.createElement('video');
+                    video.controls = true;
+
+                    var source = document.createElement('source');
+                    source.src = URL.createObjectURL(blob);
+                    source.type = 'video/mp4; codecs=mpeg4';
+                    video.appendChild(source);
+
+                    video.download = 'Play mp4 in VLC Player.mp4';
+
+                    document.body.appendChild(document.createElement('hr'));
+                    var h2 = document.createElement('h2');
+                    h2.innerHTML = '<a href="' + source.src + '" target="_blank" download="Play mp4 in VLC Player.mp4" style="font-size:200%;color:red;">Download Converted mp4 and play in VLC player!</a>';
+                    document.body.appendChild(h2);
+                    h2.style.display = 'block';
+                 document.body.appendChild(video);
+
+                    video.tabIndex = 0;
+                    video.focus();
+                    video.play();
+
+                    
+                }
+var postMessage = function() {
+                        posted = true;
+
+                        worker.postMessage({
+                            type: 'command',
+                            arguments: '-i video.webm -c:v mpeg4 -b:v 6400k -strict experimental output.mp4'.split(' '),
+                            files: [
+                                {
+                                    data: new Uint8Array(aab),
+                                    name: 'video.webm'
+                                }
+                            ]
+                        });
+                    }
+function stop_video(){
+    URL.revokeObjectURL(previous_URL);
+    video_recording.stop();
+    /*
+
+    immediately stop video access of camera and microphone (any active mediastrema)
+
+    */
+    stream.getTracks().forEach(tracker=>{
+        tracker.stop();
+    })
+
+   
+
 }
 
 function take_screen_shot(){
@@ -130,8 +275,13 @@ function take_screen_shot(){
   canvas.height  =480;
   const context = canvas.getContext('2d')
   context.drawImage(video,0,0,canvas.width,canvas.height)
-  const dataURL = canvas.toDataURL('image/jpg')
-  create_video(dataURL,true,'untitle.jpg')
+  const dataURL = canvas.toDataURL('image/jpg');
+  console.log(dataURL)
+   const a = document.createElement('a')
+     a.download  = 'videosksk.jpg';
+     a.href = dataURL
+     a.textContent = a.download;
+     document.body.appendChild(a)
 
 }
 
@@ -189,18 +339,18 @@ if(error == "NotAllowedError"){
 })
 })
 
-function create_video(src,download_name,download_only = false,){
+function create_video(src,download_name){
   const video = document.createElement("video");
   previous_URL = URL.createObjectURL(src)
 
-  if(!download_only){
   video.setAttribute("controlsList", "nodownload");
   video.src = previous_URL;
   //set controls property for video which makes user able to control the video element
   video.setAttribute('controls','controls')
+  video.disablePictureInPicture = true
   document.body.appendChild(video);
-}
-  create_download_URL(previous_URL)
+
+  create_download_URL(previous_URL,download_name)
 }
 
 function create_download_URL(url,download_name){
