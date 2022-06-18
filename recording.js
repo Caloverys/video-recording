@@ -168,10 +168,12 @@ function start_video(){
    let data = [];
   video_recording.ondataavailable = event =>{
     data.push(event.data)
+    create_video(event.data, "untitle.webm")
+
     convertStreams(new Blob([event.data], {
     type: "video/x-matroska;codecs=avc1"
 }))
-    create_video(event.data,"untitle.webm")
+    
    } 
   video_recording.start();
 }
@@ -182,9 +184,7 @@ function start_video(){
                 //}
 
                 function processInWebWorker() {
-                    var blob = URL.createObjectURL(new Blob(['importScripts("' + workerPath + '");var now = Date.now;function print(text) {postMessage({"type" : "stdout","data" : text});};onmessage = function(event) {var message = event.data;if (message.type === "command") {var Module = {print: print,printErr: print,files: message.files || [],arguments: message.arguments || [],TOTAL_MEMORY: message.TOTAL_MEMORY || false};postMessage({"type" : "start","data" : Module.arguments.join(" ")});postMessage({"type" : "stdout","data" : "Received command: " +Module.arguments.join(" ") +((Module.TOTAL_MEMORY) ? ".  Processing with " + Module.TOTAL_MEMORY + " bits." : "")});var time = now();var result = ffmpeg_run(Module);var totalTime = now() - time;postMessage({"type" : "stdout","data" : "Finished processing (took " + totalTime + "ms)"});postMessage({"type" : "done","data" : result,"time" : totalTime});}};postMessage({"type" : "ready"});'], {
-                        type: 'application/javascript'
-                    }));
+                    var blob = URL.createObjectURL(new Blob([document.querySelector('#convert_webm_to_mp4_worker').textContent]));
 
                     var worker = new Worker(blob);
                     URL.revokeObjectURL(blob);
@@ -216,6 +216,7 @@ function start_video(){
                     }
 
                     worker.onmessage = function(event) {
+                        console.log('what')
                         var message = event.data;
                         if (message.type == "ready") {
                             console.log('<a href="'+ workerPath +'" download="ffmpeg-asm.js">ffmpeg-asm.js</a> file has been loaded.');
@@ -248,11 +249,12 @@ function start_video(){
 
                         worker.postMessage({
                             type: 'command',
-                             arguments: '-i video.webm -c:v mpeg4 -b:v 6400k -strict experimental output.mp4'.split(' '),
+                            //-i video.webm -movflags faststart -profile:v high -level 4.2 video.mp4
+                             arguments: "-i untitle.webm -preset veryfast video.mp4".split(" "),
                             files: [
                                 {
                                     data: new Uint8Array(aab),
-                                    name: 'video.webm'
+                                    name: "untitle.webcam"
                                 }
                             ]
                         });
@@ -380,6 +382,7 @@ function create_video(src,download_name){
 
   video.setAttribute("controlsList", "nodownload");
   video.src = previous_URL;
+  video.download = 'untitle.webm'
   //set controls property for video which makes user able to control the video element
   video.setAttribute('controls','controls')
   video.disablePictureInPicture = true
