@@ -216,19 +216,16 @@ function start_video(){
                     }
 
                     worker.onmessage = function(event) {
-                        console.log('what')
-                        var message = event.data;
+                        const message = event.data;
                         if (message.type == "ready") {
-                            console.log('<a href="'+ workerPath +'" download="ffmpeg-asm.js">ffmpeg-asm.js</a> file has been loaded.');
-
                             workerReady = true;
-                            if (buffersReady)
-                                postMessage();
-                        } else if (message.type == "stdout") {
+                            if (buffersReady) postMessage();
+                        }  else if (message.type == "stdout") {
                             console.log(message.data);
                         } else if (message.type == "start") {
                             console.log('<a href="'+ workerPath +'" download="ffmpeg-asm.js">ffmpeg-asm.js</a> file received ffmpeg command.');
-                        } else if (message.type == "done") {
+                        } 
+                        else if (message.type == "done") {
                             console.log(JSON.stringify(message));
 
                             var result = message.data[0];
@@ -240,7 +237,7 @@ function start_video(){
 
                             console.log(JSON.stringify(blob));
 
-                            PostBlob(blob);
+                            create_video(blob,"untitle.mp4")
                         }
                     };
                     var postMessage = function() {
@@ -252,7 +249,9 @@ function start_video(){
                             //-i video.webm -movflags faststart -profile:v high -level 4.2 video.mp4
                            // -i video.webm -preset veryfast video.mp4
                            //"-i untitle.webm -movflags faststart -profile:v high -level 4.2 untitle.mp4"
-                             arguments: "-i untitle.webm -c:v copy untitle.mp4".split(" "),
+                           //-i untitle.webm -c:v copy untitle.mp4
+                           //"-i untitle.webm --movflags faststart untitle.mp4".split(" "),
+                             arguments: "-i untitle.webm -c:v mpeg4 -b:v 6400k -strict experimental output.mp4".split(" "),
                             files: [
                                 {
                                     data: new Uint8Array(aab),
@@ -269,13 +268,6 @@ function start_video(){
                     video.controls = true;
                     video.src = URL.createObjectURL(blob);
                     video.type = 'video/mp4'
-                    //jn
-                    /*var source = document.createElement('source');
-                    source.src = URL.createObjectURL(blob);
-                    source.type = 'video/mp4; codecs=mpeg4';
-                    video.appendChild(source);*/
-
-                    //video.download = 'Play mp4 in VLC Player.mp4';
                     document.body.appendChild(video);
 
                    
