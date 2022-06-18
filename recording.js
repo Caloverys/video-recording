@@ -6,9 +6,9 @@
 <head>
 
 <style>
-::root{
-    --width: 854px;
-    height: 700px;
+:root{
+    --width: 654px;
+    --height: 500px;
 }
   body{
     overflow: scroll;
@@ -24,7 +24,9 @@
   }
 
   #video_container{
-      position: relative;
+      display: flex;
+  justify-content: center;
+  align-items: center;
 
    
   }
@@ -33,8 +35,8 @@
      width: 3vw;
     height: 3vw;
 position: absolute;
-   left: 45%;
-   bottom: 7.5%;
+   margin-left: -2.5vw;
+   top: calc(var(--height)/2 - 10vh);
      border-radius: 50%;
      display: flex;
   justify-content: center;
@@ -62,19 +64,36 @@ position: absolute;
 
 }
 #screenshot_button{
-    left: 1%;
-    bottom: 7.5%;
+    position: absolute;
+    right: calc(var(--width)/2 + 2vw);
+     top: calc(var(--height)/2 - 9vh);
     color: white;
     font-size: 1.7em;
     border-radius: 50%;
     background-color: rgba(46,49,54,.7);
     padding: 0.7vw;
+    
+
 }
 #setting_button{
     color:  white;
     font-size: 1.5em;
-    bottom: 7.5%;
-    right: 40%;
+    position: absolute;
+    left: calc(var(--width)/2);
+    top: calc(var(--height)/2 - 5vh);
+
+}
+#full_screen_button{
+    position: absolute;
+    left: calc(var(--width)/2 + 3vw);
+    top: calc(var(--height)/2 - 5vh);
+
+    color: white;
+    font-size: 1.5em;
+
+}
+#button_container{
+    position: relative;
 }
 </style>
 
@@ -91,12 +110,15 @@ position: absolute;
     <div id='video_container'>
    <video id='preview'></video>
       
-        <div id='container_of_record_button'>
+
+       <div id='button_container'>
+                <div id='container_of_record_button'>
             <button id='record_button'></button>
        </div>
         <i id='full_screen_button' class="fas fa-expand"></i>
     <i id='screenshot_button' class="fa-solid fa-camera"></i>
         <i id='setting_button' class="fa-solid fa-gear"></i>
+    </div>
   
    </div>
 
