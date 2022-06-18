@@ -18,6 +18,8 @@
 </head>
 
 <body>
+   <input type="checkbox" id='cursor_checkbox' checked>
+   <label for='cursor_checkbox'>Display cursor</label>
    <button id="id-stop-button" disabled>
       Stop and clear MediaStream
     </button>
@@ -31,12 +33,11 @@
   <button onclick='take_screen_shot()'>Take</button>
   <button id='screen_capture_button'>Take</button>
 <script type="text/javascript">
-  let constraints;
-  let stream;
+  let constraints,stream,previous_URL;
   const record_button = document.querySelector('#record_button');
   const toggle_button = document.querySelector('i.fas.fa-expand');
   const screen_capture_button = document.querySelector('#screen_capture_button')
-  console.log(toggle_button)
+
  constraints = { audio: true, video: { width: 1280, height: 720 } };
 
   const video = document.querySelector('video')
@@ -47,12 +48,6 @@ navigator.mediaDevices.getUserMedia(constraints)
   video.onloadedmetadata = function(e) {
     video.play();
   };
-  /*setTimeout(() => {
-    const tracks = mediaStream.getTracks()
-    console.log(tracks)
-    tracks[0].stop()
-  
-  }, 5000)*/
 })
 
 record_button.addEventListener('click',function(){
@@ -63,34 +58,15 @@ function record_video(){
    const recording = new MediaRecorder(stream,{
     mimeType: "video/webm",
   })
-     setInterval(()=>console.log(video.duration))
    let data = [];
    recording.ondataavailable = event =>{
     data.push(event.data)
-     console.log(data)
-     console.log(event)
-     const a = document.createElement('a')
-     a.download  = 'videosksk.webm';
-     a.href = URL.createObjectURL(event.data)
-     a.textContent = a.download;
-     document.body.appendChild(a)
-     const video = document.createElement('video')
-     video.src = URL.createObjectURL(event.data);
-     console.log( URL.createObjectURL(event.data))
-     toggle_button.onclick = ()=>{togglescreen(video)}
-     //set controls property for video which makes user able to control the video element
-     video.setAttribute('controls','controls')
-     document.body.appendChild(video)
+    create_video(event.data,"untitle.webm")
    } 
-   recording.start();
-
-   console.log(recording,recording.state)
-   //setTimeout(()=>recording.stop(),2000)
-  
+  recording.start();
 }
 
 function take_screen_shot(){
-
 
   const canvas = document.createElement('canvas')
   canvas.width = 640;
@@ -98,12 +74,7 @@ function take_screen_shot(){
   const context = canvas.getContext('2d')
   context.drawImage(video,0,0,canvas.width,canvas.height)
   const dataURL = canvas.toDataURL('image/jpg')
-  console.log(dataURL)
-   const a = document.createElement('a')
-     a.download  = 'videosksk.jpg';
-     a.href = dataURL
-     a.textContent = a.download;
-     document.body.appendChild(a)
+  create_video(dataURL,true,'untitle.jpg')
 
 }
 
@@ -151,29 +122,57 @@ screen_capture_button.addEventListener('click',function(){
 };
 navigator.mediaDevices.getDisplayMedia(displayMediaOptions).then(screen_media=>{
   const recording = new MediaRecorder(screen_media)
-  recording.ondataavailable= event =>{
-    console.log('j')
-    let videoElem = document.createElement("video");
-
-  videoElem.width = 640;
-  videoElem.height = 360;
-  videoElem.autoplay = true;
-  videoElem.setAttribute("playsinline", true);
-      ///videoElem.srcObject = new MediaStream(screen_media.getTracks());
-    videoElem.src = URL.createObjectURL(event.data)
-  document.body.appendChild(videoElem);
-  const a = document.createElement('a')
-     a.download  = 'videosksk.webm';
-     a.href = URL.createObjectURL(event.data)
-     a.textContent = a.download;
-     document.body.appendChild(a)
-
-  }
+  recording.ondataavailable= event => create_video(event.data,"untitle.webm")
   recording.start()
-  
+})
+.catch(error=>{
+if(error == "NotAllowedError"){
+  check_user_broswer()
+}
 })
 })
 
+function create_video(src,download_name,download_only = false,){
+  const video = document.createElement("video");
+  previous_URL = URL.createObjectURL(src)
 
+  if(!download_only){
+  video.setAttribute("controlsList", "nodownload");
+  video.src = previous_URL;
+  //set controls property for video which makes user able to control the video element
+  video.setAttribute('controls','controls')
+  document.body.appendChild(video);
+}
+  create_download_URL(previous_URL)
+}
+
+function create_download_URL(url,download_name){
+const a = document.createElement('a')
+  a.download  = download_name;
+  a.href = previous_URL
+  a.textContent = a.download;
+
+  document.body.appendChild(a)
+
+}
+
+function check_user_broswer(){
+//!! is just to do a boolean check, it is equivalent to  
+const is_IE = false || !!document.documentMode;
+const is_Edge = !is_IE && !!window.StyleMedia;
+if(navigator.userAgent.indexOf("Chrome") != -1 && !isEdge) browser_name = 'Chrome';
+
+else if(navigator.userAgent.indexOf("Safari") != -1 && !isEdge) browser_name = 'Safari';
+
+else if(navigator.userAgent.indexOf("Firefox") != -1 ) browser_name = 'Firefox';
+
+else if((navigator.userAgent.indexOf("MSIE") != -1 ) || (!!document.documentMode == true )) browser_name = 'IE';
+
+else if(isEdge) browser_name = 'Edge';
+
+else browser_name = 'other-browser';
+
+return browser_name;
+}
 </script>  
 </body>
