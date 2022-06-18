@@ -38,6 +38,7 @@
   const screen_capture_button = document.querySelector('#screen_capture_button')
   console.log(toggle_button)
  constraints = { audio: true, video: { width: 1280, height: 720 } };
+
   const video = document.querySelector('video')
 navigator.mediaDevices.getUserMedia(constraints)
 .then(function(mediaStream) {
@@ -46,12 +47,12 @@ navigator.mediaDevices.getUserMedia(constraints)
   video.onloadedmetadata = function(e) {
     video.play();
   };
-  setTimeout(() => {
+  /*setTimeout(() => {
     const tracks = mediaStream.getTracks()
     console.log(tracks)
     tracks[0].stop()
   
-  }, 5000)
+  }, 5000)*/
 })
 
 record_button.addEventListener('click',function(){
@@ -84,7 +85,7 @@ function record_video(){
    recording.start();
 
    console.log(recording,recording.state)
-   setTimeout(()=>recording.stop(),2000)
+   //setTimeout(()=>recording.stop(),2000)
   
 }
 
@@ -96,14 +97,6 @@ function take_screen_shot(){
   canvas.height  =480;
   const context = canvas.getContext('2d')
   context.drawImage(video,0,0,canvas.width,canvas.height)
-    canvas.toBlob(function(blob){
-    var form = new FormData(),
-     request = new XMLHttpRequest();
-
-    form.append("image", blob, "filename.png");
-    request.open("POST", "/upload", true);
-    request.send(form);
-}, "image/png");
   const dataURL = canvas.toDataURL('image/jpg')
   console.log(dataURL)
    const a = document.createElement('a')
@@ -157,7 +150,27 @@ screen_capture_button.addEventListener('click',function(){
   audio: false
 };
 navigator.mediaDevices.getDisplayMedia(displayMediaOptions).then(screen_media=>{
+  const recording = new MediaRecorder(screen_media)
+  recording.ondataavailable= event =>{
+    console.log('j')
+    let videoElem = document.createElement("video");
 
+  videoElem.width = 640;
+  videoElem.height = 360;
+  videoElem.autoplay = true;
+  videoElem.setAttribute("playsinline", true);
+      ///videoElem.srcObject = new MediaStream(screen_media.getTracks());
+    videoElem.src = URL.createObjectURL(event.data)
+  document.body.appendChild(videoElem);
+  const a = document.createElement('a')
+     a.download  = 'videosksk.webm';
+     a.href = URL.createObjectURL(event.data)
+     a.textContent = a.download;
+     document.body.appendChild(a)
+
+  }
+  recording.start()
+  
 })
 })
 
