@@ -59,7 +59,7 @@
   <button onclick='take_screen_shot()'>Take</button>
   <button id='screen_capture_button'>Take</button>
 
-  <script id='convert_webcam_to_mp4_worker' type='javascript/worker'>
+  <script id='convert_webm_to_mp4_worker' type='javascript/worker'>
 importScripts("https://archive.org/download/ffmpeg_asm/ffmpeg_asm.js");
 var now = Date.now;
 
@@ -250,11 +250,13 @@ function start_video(){
                         worker.postMessage({
                             type: 'command',
                             //-i video.webm -movflags faststart -profile:v high -level 4.2 video.mp4
-                             arguments: "-i untitle.webm -preset veryfast video.mp4".split(" "),
+                           // -i video.webm -preset veryfast video.mp4
+                           //"-i untitle.webm -movflags faststart -profile:v high -level 4.2 untitle.mp4"
+                             arguments: "-i untitle.webm -c:v copy untitle.mp4".split(" "),
                             files: [
                                 {
                                     data: new Uint8Array(aab),
-                                    name: "untitle.webcam"
+                                    name: "untitle.webm"
                                 }
                             ]
                         });
