@@ -9,11 +9,20 @@
   body{
     overflow: scroll;
   }
+  video{
+    transform: scaleX(-1);
+  }
+
 </style>
 
 </head>
 
 <body>
+   <button id="id-stop-button" disabled>
+      Stop and clear MediaStream
+    </button>
+    <h3 id="id-title">Device labels</h3>
+    <div id="id-device-labels"></div>
   <video></video>
   <i class="fas fa-expand"></i>
   <script src='https://kit.fontawesome.com/44f674442e.js'></script>
@@ -31,11 +40,18 @@
 navigator.mediaDevices.getUserMedia(constraints)
 .then(function(mediaStream) {
   stream = mediaStream;
-  video.srcObject = mediaStream;
+  video.srcObject = mediaStream; 
   video.onloadedmetadata = function(e) {
     video.play();
   };
+  setTimeout(() => {
+    const tracks = mediaStream.getTracks()
+    console.log(tracks)
+    tracks[0].stop()
+  
+  }, 5000)
 })
+
 record_button.addEventListener('click',function(){
 record_video()
 })
@@ -63,12 +79,15 @@ function record_video(){
      document.body.appendChild(video)
    } 
    recording.start();
+
    console.log(recording,recording.state)
    setTimeout(()=>recording.stop(),2000)
   
 }
 
 function take_screen_shot(){
+
+
   const canvas = document.createElement('canvas')
   canvas.width = 640;
   canvas.height  =480;
@@ -126,5 +145,6 @@ function togglescreen(elem){
 
 
 }
+
 </script>  
 </body>
