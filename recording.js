@@ -33,23 +33,66 @@
   <button onclick='take_screen_shot()'>Take</button>
   <button id='screen_capture_button'>Take</button>
 <script type="text/javascript">
+/* 
+ask for user permissin first to prevent future asking 
+
+*/
+/*window.addEventListener('DOMContentLoaded', () => {
+    navigator.mediaDevices.getUserMedia({
+      audio:true,
+      video:true,
+    })
+});*/
   let constraints,stream,previous_URL;
   const record_button = document.querySelector('#record_button');
   const toggle_button = document.querySelector('i.fas.fa-expand');
   const screen_capture_button = document.querySelector('#screen_capture_button')
+  const cursor_checkbox = document.querySelector('#cursor_checkbox')
+   //the default value for displaying cursor is always 
+  let is_display_cursor = "always"
+ constraints = { audio: false, video: { width: 1280, height: 720 } };
 
- constraints = { audio: true, video: { width: 1280, height: 720 } };
 
   const video = document.querySelector('video')
+
+cursor_checkbox.addEventListener('click',function(){
+  if(cursor_checkbox.checked) is_display_cursor = "always"
+    else is_display_cursor = 'none'
+})
+window.addEventListener('load',function(){
 navigator.mediaDevices.getUserMedia(constraints)
 .then(function(mediaStream) {
+
+   //console.log(MediaStreamTrack.getConstraints())
+      console.log(mediaStream.getTracks())
+  //.map( (track) => console.log(track.getSettings()));
   stream = mediaStream;
+
   video.srcObject = mediaStream; 
   video.onloadedmetadata = function(e) {
     video.play();
   };
+
+})
 })
 
+setTimeout(()=>{
+     constraints = { audio: false, video: { width: 1180, height: 740 } };
+  navigator.mediaDevices.getUserMedia(constraints)
+.then(function(mediaStream) {
+
+   //console.log(MediaStreamTrack.getConstraints())
+      console.log(mediaStream.getTracks())
+  //.map( (track) => console.log(track.getSettings()));
+  stream = mediaStream;
+
+  video.srcObject = mediaStream; 
+  video.onloadedmetadata = function(e) {
+    video.play();
+  };
+
+},5000)
+})
 record_button.addEventListener('click',function(){
 record_video()
 })
@@ -116,7 +159,7 @@ function togglescreen(elem){
 screen_capture_button.addEventListener('click',function(){
   const displayMediaOptions = {
   video: {
-    cursor: "always"
+    cursor: is_display_cursor
   },
   audio: false
 };
@@ -157,7 +200,14 @@ const a = document.createElement('a')
 }
 
 function check_user_broswer(){
-//!! is just to do a boolean check, it is equivalent to  
+/*
+
+!! is just to do a boolean check 
+
+!!condition is equivalent to Boolean (condition)
+
+ */
+
 const is_IE = false || !!document.documentMode;
 const is_Edge = !is_IE && !!window.StyleMedia;
 if(navigator.userAgent.indexOf("Chrome") != -1 && !isEdge) browser_name = 'Chrome';
