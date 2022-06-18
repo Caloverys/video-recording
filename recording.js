@@ -12,7 +12,31 @@
   video{
     transform: scaleX(-1);
   }
+  #parent_div{
+     border: 5px solid #64686B;
+     width: 4vw;
+    height: 4vw;
+     border-radius: 50%;
+     display: flex;
+  justify-content: center;
+  align-items: center;
+    
+  }
+  #record_button{
 
+    display: inline-block;
+    border-radius: 50%;
+    border: none;
+    width: 3.5vw;
+    height: 3.5vw;
+    background-color: red;
+  
+}
+.active{
+    border-radius: 5px !important;
+    width: 1.75vw !important;
+    height:1.75vw !important;
+}
 </style>
 
 </head>
@@ -28,7 +52,9 @@
   <video></video>
   <i class="fas fa-expand"></i>
   <script src='https://kit.fontawesome.com/44f674442e.js'></script>
-  <button id='record_button'>Record</button>
+  <div id='parent_div'>
+  <button id='record_button'></button>
+</div>
   <button id='toggle_button'>Full screen</button>
   <button onclick='take_screen_shot()'>Take</button>
   <button id='screen_capture_button'>Take</button>
@@ -76,25 +102,13 @@ navigator.mediaDevices.getUserMedia(constraints)
 })
 })
 
-setTimeout(()=>{
-     constraints = { audio: false, video: { width: 1180, height: 740 } };
-  navigator.mediaDevices.getUserMedia(constraints)
-.then(function(mediaStream) {
-
-   //console.log(MediaStreamTrack.getConstraints())
-      console.log(mediaStream.getTracks())
-  //.map( (track) => console.log(track.getSettings()));
-  stream = mediaStream;
-
-  video.srcObject = mediaStream; 
-  video.onloadedmetadata = function(e) {
-    video.play();
-  };
-
-},5000)
-})
 record_button.addEventListener('click',function(){
-record_video()
+    if(!record_button.classList.contains('active')){
+        record_button.classList.add('active');
+        record_video();
+    }else{
+        record_button.classList.remove('active')
+    }
 })
 
 function record_video(){
