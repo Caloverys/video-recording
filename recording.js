@@ -6,6 +6,9 @@
 <head>
 
 <style>
+*{
+    user-select: none;
+}
 :root{
     --width: 654px;
     --height: 500px;
@@ -27,6 +30,7 @@
       display: flex;
   justify-content: center;
   align-items: center;
+  pointer-events: none;
 
    
   }
@@ -54,6 +58,9 @@ position: absolute;
     background-color: red;
   
 }
+i:hover,button:hover{
+    cursor: pointer;
+}
 .active{
     border-radius: 5px !important;
     width: 1.25vw !important;
@@ -61,6 +68,7 @@ position: absolute;
 }
 #video_container > *:not(video){
     position: absolute;
+    pointer-events: none;
 
 }
 #screenshot_button{
@@ -75,14 +83,25 @@ position: absolute;
     
 
 }
+button,i{
+ z-index: 999;
+}
+#setting_button:hover{
+    transform: rotate(-60deg);
+}
+
 #setting_button{
+    z-index: 9999;
     color:  white;
     font-size: 1.5em;
     position: absolute;
     left: calc(var(--width)/2);
     top: calc(var(--height)/2 - 5vh);
-
 }
+#setting_button:hover{
+    transform: rotate(-60deg);
+}
+
 #full_screen_button{
     position: absolute;
     left: calc(var(--width)/2 + 3vw);
@@ -105,7 +124,6 @@ position: absolute;
    <button id="id-stop-button" disabled>
       Stop and clear MediaStream
     </button>
-    <h3 id="id-title">Device labels</h3>
     <div id="id-device-labels"></div>
     <div id='video_container'>
    <video id='preview'></video>
