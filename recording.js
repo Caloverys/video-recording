@@ -29,11 +29,13 @@
   <button id='record_button'>Record</button>
   <button id='toggle_button'>Full screen</button>
   <button onclick='take_screen_shot()'>Take</button>
+  <button id='screen_capture_button'>Take</button>
 <script type="text/javascript">
   let constraints;
   let stream;
   const record_button = document.querySelector('#record_button');
   const toggle_button = document.querySelector('i.fas.fa-expand');
+  const screen_capture_button = document.querySelector('#screen_capture_button')
   console.log(toggle_button)
  constraints = { audio: true, video: { width: 1280, height: 720 } };
   const video = document.querySelector('video')
@@ -60,6 +62,7 @@ function record_video(){
    const recording = new MediaRecorder(stream,{
     mimeType: "video/webm",
   })
+     setInterval(()=>console.log(video.duration))
    let data = [];
    recording.ondataavailable = event =>{
     data.push(event.data)
@@ -145,6 +148,19 @@ function togglescreen(elem){
 
 
 }
+
+screen_capture_button.addEventListener('click',function(){
+  const displayMediaOptions = {
+  video: {
+    cursor: "always"
+  },
+  audio: false
+};
+navigator.mediaDevices.getDisplayMedia(displayMediaOptions).then(screen_media=>{
+
+})
+})
+
 
 </script>  
 </body>
