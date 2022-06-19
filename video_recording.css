@@ -6,12 +6,9 @@
     --height: 500px;
 }
 
+video{
 
-  /*
-  video{
-    transform: scaleX(-1);
-  }
-  */
+}
   #preview{
      width: var(--widh);
       height: var(--height);
@@ -74,12 +71,10 @@ i:hover,button:hover{
     border-radius: 50%;
     background-color: rgba(46,49,54,.5);
     padding: 0.7vw;
+     transition: transform 0.3s;
 }
 
-#setting_button:hover{
-    transform: rotate(50deg);
-    transition: transform 0.3s;
-}
+
 
 #setting_button{
 
@@ -107,17 +102,20 @@ i:hover,button:hover{
 #button_container{
     position: relative;
 }
-video{
-  pointer-events: none;
+video::-webkit-media-controls {
+  display:none !important;
 }
 .tooltip{
 background-color: #272a30;
 border-radius: 7px;
-width: 20vw;
+width: 15vw;
 color: #d7dce6;
 padding: 15px;
 position: relative;
 margin: 0;
+right: 25vw;
+bottom: 30vh;
+visibility: hidden;
 }
 
 
@@ -133,10 +131,10 @@ margin: 0;
        
 }
 #microphone > button{
- top: 37.5px;
+ top: 27.5px;
 }
 #camera > button{
-    top: 112.5px; 
+    top: 85px; 
 }
 .tooltip ul{
     list-style: none;
@@ -147,6 +145,8 @@ margin: 0;
 .tooltip li{
 padding-left: 0.5em; 
 margin-bottom: 10px;
+font-size: 0.85em;
+width: 90%;
 }
  
 .tooltip li:before{
@@ -163,7 +163,7 @@ content: "• ";
     top: 0;
     display: inline-block;
     border-radius: 50%;
-    transition: all 0.2s ease-in;
+    transition: right 0.2s ease-in;
     background-color: white;
 }
 .button_active{
@@ -181,3 +181,23 @@ content: "• ";
 .tooltip > div{
     margin-bottom: 10px;
 }
+.full_screen_button_full_screen{
+    margin-left: 41vw;
+    left: 0 !important;
+}
+.screenshot_button_full_screen{
+    margin-right: 38vw;
+    right: 0 !important;
+}
+.setting_button_full_screen{
+    margin-left: 37vw;
+    left: 0 !important;
+}
+
+
+
+
+
+
+
+
