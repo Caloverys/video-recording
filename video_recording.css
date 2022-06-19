@@ -2,14 +2,14 @@
     user-select: none;
 }
 :root{
-    --width: 900px;
-    --height: 675px;
+    --width: 800px;
+    --height: 575px;
 }
 
 
   #preview{
-     width: var(--width);
-      height: var(--height);
+     width: var(--width) ;
+      height: var(--height) ;
       background-color: #272a30;
   }
 
@@ -110,8 +110,8 @@ color: #d7dce6;
 padding: 15px;
 position: relative;
 margin: 0;
-    right: 25vw;
-    bottom: 10vh;
+    right: 27.5vw;
+    bottom: 20vh;
 visibility: hidden;
 }
 
@@ -190,7 +190,8 @@ content: "• ";
     left: 0 !important;
 }
 .tooltip_full_screen{
-   right: 7.5vw !important;;
+   right: 7.5vw !important;
+   bottom:  8vh !important;
 }
 
 #trash_button{
@@ -200,7 +201,7 @@ content: "• ";
     background-color: rgba(46,49,54,.95);
     font-size: 1.7em;
    position: absolute;
-    top: 35vh;
+    top:25vh;
     left: 5vw;
 
 }
@@ -216,8 +217,8 @@ content: "• ";
     font-size: 1.5em;
     padding: 12.5px 15px;
     position: absolute;
-    left: 22.5vw;
-    top: -45vh;
+    left: 20vw;
+    top: -40vh;
 }
 #delete_button:hover{
     background-color: #272a30
@@ -237,7 +238,7 @@ content: "• ";
     padding: 12.5px;
     border-radius: 22.5px;
     border: none;
-    top: 36vh;
+    top: 26vh;
     left: -5vw;
     color: #272a30;
     text-decoration: none;
@@ -249,6 +250,54 @@ content: "• ";
     font-size: 1.5em;
     margin-right: 7.5px;
 }
+
+#mode_change_button{
+  align-items: center;
+  appearance: none;
+  background-color: #fff;
+  border-radius: 24px;
+  border-style: none;
+  box-shadow: rgba(0, 0, 0, .2) 0 3px 5px -1px,rgba(0, 0, 0, .14) 0 6px 10px 0,rgba(0, 0, 0, .12) 0 1px 18px 0;
+  box-sizing: border-box;
+  color: #3c4043;
+  cursor: pointer;
+  display: inline-flex;
+  fill: currentcolor;
+  font-size: 14px;
+  font-weight: 500;
+  height: 48px;
+  justify-content: center;
+  letter-spacing: .25px;
+  line-height: normal;
+  max-width: 100%;
+  padding: 2px 24px;
+  position: relative;
+  left: 35%;
+  margin-top: 1.5%;
+  font-size: 1.5em;
+  width: 30%;
+  text-align: center;
+  text-transform: none;
+  transition: box-shadow 280ms cubic-bezier(.4, 0, .2, 1),opacity 15ms linear 30ms,transform 270ms cubic-bezier(0, 0, .2, 1) 0ms;
+  touch-action: manipulation;
+  will-change: transform,opacity;
+}
+
+#mode_change_button:hover {
+  background: #F6F9FE;
+  color: #174ea6;
+}
+
+#mode_change_button:active {
+  box-shadow: 0 4px 4px 0 rgb(60 64 67 / 30%), 0 8px 12px 6px rgb(60 64 67 / 15%);
+  outline: none;
+}
+
+#mode_change_button:focus {
+  outline: none;
+  border: 2px solid #4285f4;
+}
+
 
 
 
