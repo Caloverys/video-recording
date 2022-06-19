@@ -114,7 +114,13 @@ video{
 background-color: #272a30;
 border-radius: 7px;
 width: 20vw;
+color: #d7dce6;
+padding: 15px;
+position: relative;
+margin: 0;
 }
+
+
 .tooltip > div > button{
     width: 30px;
     background-color: #4b4d52;
@@ -122,18 +128,30 @@ width: 20vw;
         border: none;
         border-radius: 15px;
         height: 17.5px;
+        position: absolute;
+        right: 5%;
+       
+}
+#microphone > button{
+ top: 37.5px;
+}
+#camera > button{
+    top: 112.5px; 
 }
 .tooltip ul{
     list-style: none;
   padding: 0;
   margin: 0;
+  margin-top: 10px;
 }
 .tooltip li{
- padding-left: 1em; 
-  text-indent: -.7em;
+padding-left: 0.5em; 
+margin-bottom: 10px;
 }
+ 
 .tooltip li:before{
-
+content: "• ";
+  color: #00ff8e;
 }
 .tooltip i{
     height: 17.5px;
@@ -152,4 +170,14 @@ width: 20vw;
      right: 0 !important;
      background-color: #00ff8e !important;
 
+}
+
+#mirror_mode{
+    padding-bottom: 10px;
+}
+#microphone,#camera,#mirror_mode{
+    border-bottom: solid 1.5px rgba(70,72,78);
+}
+.tooltip > div{
+    margin-bottom: 10px;
 }
