@@ -9,6 +9,7 @@
   const cursor_checkbox = document.querySelector('#cursor_checkbox');
   const setting_button = document.querySelector('#setting_button')
   const screen_shot_button = document.querySelector('#screenshot_button')
+  const button_container = document.querySelector('#button_container')
  const tooltip = document.querySelector('.tooltip')
    //the default value for displaying cursor is always 
   let is_display_cursor = "always";
@@ -36,6 +37,12 @@ setting_button.addEventListener('click',function(){
     document.removeEventListener("click",check_tool_tip)
  }
 })
+
+screen_shot_button.addEventListener('click',function(){
+take_screen_shot()
+})
+
+
 function check_tool_tip(event){
     if(tooltip_visible && event.target.id !== "setting_button" ){
     tooltip.style.visibility = 'hidden'
@@ -121,6 +128,7 @@ function change_screen_event(){
         full_screen_button.classList.add('full_screen_button_full_screen')
         screen_shot_button.classList.add('screenshot_button_full_screen')
         setting_button.classList.add("setting_button_full_screen")
+        tooltip.classList.add('tooltip_full_screen')
         //full_screen_button.style.right = '5vw'
 
     }else{
@@ -129,6 +137,7 @@ function change_screen_event(){
         full_screen_button.classList.remove('full_screen_button_full_screen')
         screen_shot_button.classList.remove('screenshot_button_full_screen')
         setting_button.classList.remove("setting_button_full_screen");
+        tooltip.classList.remove("tooltip_full_screen")
     }
 }
 
@@ -269,18 +278,43 @@ function stop_video(){
 function take_screen_shot(){
 
   const canvas = document.createElement('canvas')
-  canvas.width = 640;
-  canvas.height  =480;
+  const {width,height} = preview_video.getBoundingClientRect()
+  canvas.width = width;
+  canvas.height  =height;
+   button_container.style.display = 'none'
   const context = canvas.getContext('2d')
-  context.drawImage(video,0,0,canvas.width,canvas.height)
+  context.drawImage(preview_video,0,0,width,height)
+   button_container.style.display = 'revert'
   const dataURL = canvas.toDataURL('image/jpg');
+  const img = document.createElement('img')
+  img.src=dataURL
+  video_container.appendChild(img)
+  const delete_button = document.querySelector('#delete_button');
+  const trash_button = document.querySelector('#trash_button');
+  button_container.querySelectorAll('button').forEach(button =>button.style.display = 'none');
+  delete_button.style.display ='revert';
+  trash_button.style.display = 'revert';
+   trash_button.addEventListener('click',remove_image)
+   delete_button.addEventListener('click',remove_image)
 
    const a = document.createElement('a')
-     a.download  = 'videosksk.jpg';
+     a.download  = 'image.jpg';
      a.href = dataURL
      a.textContent = a.download;
      document.body.appendChild(a)
 
+   function remove_image(){
+    trash_button.removeEventListener('click',remove_image)
+    delete_button.removeEventListener('click',remove_image)
+    img.remove();
+    a.remove();
+    canvas.remove();
+    button_container.querySelectorAll('button').forEach(button =>button.style.display = 'revert');
+    delete_button.style.display = 'none';
+    trash_button.style.display = 'none'
+
+    
+   }
 }
 
 
