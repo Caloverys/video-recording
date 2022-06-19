@@ -2,16 +2,15 @@
     user-select: none;
 }
 :root{
-    --width: 1000px;
-    --height: 650px;
+    --width: 900px;
+    --height: 675px;
 }
 
-video{
 
-}
   #preview{
-     width: var(--widh);
+     width: var(--width);
       height: var(--height);
+      background-color: #272a30;
   }
 
   #video_container{
@@ -102,9 +101,7 @@ i:hover,button:hover{
 #button_container{
     position: relative;
 }
-video::-webkit-media-controls {
-  display:none !important;
-}
+
 .tooltip{
 background-color: #272a30;
 border-radius: 7px;
@@ -187,10 +184,7 @@ content: "• ";
     margin-left: 45vw;
     left: 0 !important;
 }
-.screenshot_button_full_screen{
-    margin-right: 43vw;
-    right: 0 !important;
-}
+ 
 .setting_button_full_screen{
     margin-left: 41vw;
     left: 0 !important;
@@ -207,11 +201,12 @@ content: "• ";
     font-size: 1.7em;
    position: absolute;
     top: 35vh;
+    left: 5vw;
 
 }
 #trash_button:hover{
     color: red;
-        transition: color 0.2s;
+    transition: color 0.2s;
 }
 #delete_button{
     color: white;
@@ -231,6 +226,31 @@ content: "• ";
     display: none;
     z-index: 9999;
 }
+#download_button{
+    background-color: rgba(255,255,255,.95);
+    font-size: 16px;
+    display: none;
+    z-index: 999;
+    position: absolute;
+    align-items: center;
+    color: #2e3136;
+    padding: 12.5px;
+    border-radius: 22.5px;
+    border: none;
+    top: 36vh;
+    left: -5vw;
+    color: #272a30;
+    text-decoration: none;
+}
+#download_button:hover{
+    color: lawngreen;
+}
+#download_button > i{
+    font-size: 1.5em;
+    margin-right: 7.5px;
+}
+
+
 
 
 
