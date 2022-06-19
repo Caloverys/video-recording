@@ -2,8 +2,8 @@
     user-select: none;
 }
 :root{
-    --width: 654px;
-    --height: 500px;
+    --width: 1000px;
+    --height: 650px;
 }
 
 video{
@@ -24,8 +24,8 @@ video{
   }
   #container_of_record_button{
        border: 5px solid #64686B;
-     width: 3vw;
-    height: 3vw;
+     width: 45px;
+    height: 45px;
 position: absolute;
    margin-left: -2.5vw;
    top: calc(var(--height)/2 - 10vh);
@@ -41,8 +41,8 @@ position: absolute;
     
     border-radius: 50%;
     border: none;
-    width: 2.5vw;
-    height: 2.5vw;
+    width: 35px;
+    height: 35px;
     background-color: red;
   
 }
@@ -64,8 +64,8 @@ i:hover,button:hover{
 }
 #screenshot_button{
     position: absolute;
-    right: calc(var(--width)/2 + 2vw);
-     top: calc(var(--height)/2 - 9vh);
+    right: calc(var(--width)/3 + 2vw);
+     top: calc(var(--height)/2 - 8vh);
     color: white;
     font-size: 1.7em;
     border-radius: 50%;
@@ -77,12 +77,12 @@ i:hover,button:hover{
 
 
 #setting_button{
-
     color:  white;
     font-size: 1.5em;
     position: absolute;
-    left: calc(var(--width)/2);
-    top: calc(var(--height)/2 - 5vh);
+    left: calc(var(--width)/3 - 0.5vw);
+    top: calc(var(--height)/2 - 5.75vh);
+    padding: 5px
 }
 #full_screen_button:hover{
     font-weight: 900;
@@ -92,7 +92,7 @@ i:hover,button:hover{
 
 #full_screen_button{
     position: absolute;
-    left: calc(var(--width)/2 + 3vw);
+    left: calc(var(--width)/3 + 4vw);
     top: calc(var(--height)/2 - 5vh);
 
     color: white;
@@ -113,8 +113,8 @@ color: #d7dce6;
 padding: 15px;
 position: relative;
 margin: 0;
-right: 25vw;
-bottom: 30vh;
+    right: 25vw;
+    bottom: 10vh;
 visibility: hidden;
 }
 
@@ -181,21 +181,56 @@ content: "• ";
 .tooltip > div{
     margin-bottom: 10px;
 }
+
+
 .full_screen_button_full_screen{
-    margin-left: 41vw;
+    margin-left: 45vw;
     left: 0 !important;
 }
 .screenshot_button_full_screen{
-    margin-right: 38vw;
+    margin-right: 43vw;
     right: 0 !important;
 }
 .setting_button_full_screen{
-    margin-left: 37vw;
+    margin-left: 41vw;
     left: 0 !important;
 }
+.tooltip_full_screen{
+   right: 7.5vw !important;;
+}
 
+#trash_button{
+    padding: 15px;
+    border-radius: 50%;
+    color: white;
+    background-color: rgba(46,49,54,.95);
+    font-size: 1.7em;
+   position: absolute;
+    top: 35vh;
 
-
+}
+#trash_button:hover{
+    color: red;
+        transition: color 0.2s;
+}
+#delete_button{
+    color: white;
+    background-color: rgba(39,42,48,.8);
+    border-radius: 50%;
+    transition: all 0.2s;
+    font-size: 1.5em;
+    padding: 12.5px 15px;
+    position: absolute;
+    left: 22.5vw;
+    top: -45vh;
+}
+#delete_button:hover{
+    background-color: #272a30
+}
+#trash_button,#delete_button{
+    display: none;
+    z-index: 9999;
+}
 
 
 
