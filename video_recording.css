@@ -1,0 +1,155 @@
+*{
+    user-select: none;
+}
+:root{
+    --width: 654px;
+    --height: 500px;
+}
+
+
+  /*
+  video{
+    transform: scaleX(-1);
+  }
+  */
+  #preview{
+     width: var(--widh);
+      height: var(--height);
+  }
+
+  #video_container{
+      display: flex;
+  justify-content: center;
+  align-items: center;
+
+
+   
+  }
+  #container_of_record_button{
+       border: 5px solid #64686B;
+     width: 3vw;
+    height: 3vw;
+position: absolute;
+   margin-left: -2.5vw;
+   top: calc(var(--height)/2 - 10vh);
+     border-radius: 50%;
+     display: flex;
+  justify-content: center;
+  align-items: center;
+    
+  }
+  #record_button{
+
+    display: inline-block;
+    
+    border-radius: 50%;
+    border: none;
+    width: 2.5vw;
+    height: 2.5vw;
+    background-color: red;
+  
+}
+i:hover,button:hover{
+    cursor: pointer;
+}
+#screenshot_button:hover{
+    cursor: pointer;
+    background-color: rgba(46,49,54,.8);
+}
+.active{
+    border-radius: 5px !important;
+    width: 1.25vw !important;
+    height:1.25vw !important;
+}
+#video_container > *:not(video){
+    position: absolute;
+
+}
+#screenshot_button{
+    position: absolute;
+    right: calc(var(--width)/2 + 2vw);
+     top: calc(var(--height)/2 - 9vh);
+    color: white;
+    font-size: 1.7em;
+    border-radius: 50%;
+    background-color: rgba(46,49,54,.5);
+    padding: 0.7vw;
+}
+
+#setting_button:hover{
+    transform: rotate(50deg);
+    transition: transform 0.3s;
+}
+
+#setting_button{
+
+    color:  white;
+    font-size: 1.5em;
+    position: absolute;
+    left: calc(var(--width)/2);
+    top: calc(var(--height)/2 - 5vh);
+}
+#full_screen_button:hover{
+    font-weight: 900;
+    font-size: 1.7em;
+
+}
+
+#full_screen_button{
+    position: absolute;
+    left: calc(var(--width)/2 + 3vw);
+    top: calc(var(--height)/2 - 5vh);
+
+    color: white;
+    font-size: 1.5em;
+
+}
+#button_container{
+    position: relative;
+}
+video{
+  pointer-events: none;
+}
+.tooltip{
+background-color: #272a30;
+border-radius: 7px;
+width: 20vw;
+}
+.tooltip > div > button{
+    width: 30px;
+    background-color: #4b4d52;
+        position: relative;
+        border: none;
+        border-radius: 15px;
+        height: 17.5px;
+}
+.tooltip ul{
+    list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.tooltip li{
+ padding-left: 1em; 
+  text-indent: -.7em;
+}
+.tooltip li:before{
+
+}
+.tooltip i{
+    height: 17.5px;
+    width: 17.5px;
+    background-color: white;
+    position: absolute;
+    right: 50%;
+    margin: 0;
+    top: 0;
+    display: inline-block;
+    border-radius: 50%;
+    transition: all 0.2s ease-in;
+    background-color: white;
+}
+.button_active{
+     right: 0 !important;
+     background-color: #00ff8e !important;
+
+}
