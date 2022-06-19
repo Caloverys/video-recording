@@ -98,25 +98,23 @@ cursor_checkbox.addEventListener('click',function(){
     else is_display_cursor = 'none'
 })
 
-document.addEventListener('fullscreenchange', change_screen_event, false);
- document.addEventListener('mozfullscreenchange', change_screen_event, false);
- document.addEventListener('MSFullscreenChange', change_screen_event, false);
- document.addEventListener('webkitfullscreenchange', change_screen_event, false);
+document.addEventListener('fullscreenchange', leave, false);
+ document.addEventListener('mozfullscreenchange',leave, false);
+ document.addEventListener('MSFullscreenChange', leave, false);
+ document.addEventListener('webkitfullscreenchange', leave, false);
 
 
 
-let in_full_screen = false
+let turn_full_screen = false;
 full_screen_button.addEventListener('click',function(){
     change_screen_event()
+    turn_full_screen = true
     togglescreen(video_container);
-
-    if(in_full_screen) in_full_screen = false
-
+    
 })
-
 function change_screen_event(){
     const root = document.querySelector(':root')
-    if(!in_full_screen){
+    if(!document.fullscreenElement){
        
         root.style.setProperty("--width",'100vw')
         root.style.setProperty("--height","100vh")
@@ -124,19 +122,32 @@ function change_screen_event(){
         screen_shot_button.classList.add('screenshot_button_full_screen')
         setting_button.classList.add("setting_button_full_screen")
         //full_screen_button.style.right = '5vw'
-        in_full_screen = true
-    }else{
-         root.style.setProperty("--width","654px")
 
-        root.style.setProperty("--height","500px")
+    }else{
+         root.style.setProperty("--width","1000px")
+        root.style.setProperty("--height","650px")
+        full_screen_button.classList.remove('full_screen_button_full_screen')
+        screen_shot_button.classList.remove('screenshot_button_full_screen')
+        setting_button.classList.remove("setting_button_full_screen");
+    }
+}
+
+function leave(){
+    if(turn_full_screen) {
+        turn_full_screen = false
+        return
+    }
+      const root = document.querySelector(':root');
+       root.style.setProperty("--width","1000px")
+
+        root.style.setProperty("--height","650px")
         in_full_screen = false
         full_screen_button.classList.remove('full_screen_button_full_screen')
         screen_shot_button.classList.remove('screenshot_button_full_screen')
-        setting_button.classList.remove("setting_button_full_screen")
-    }
+        setting_button.classList.remove("setting_button_full_screen");
 }
 window.addEventListener('load',function(){
-navigator.mediaDevices.getUserMedia({ audio: false, video: { width: 1200, height: 720 } })
+navigator.mediaDevices.getUserMedia({ audio: false, video: { width: 1400, height: 720 } })
 .then(function(mediaStream) {
 
   stream = mediaStream;
@@ -274,7 +285,9 @@ function take_screen_shot(){
 
 
 function togglescreen(elem){
-  if(!elem.fullScreenElement || !elem.mozFullScreen || !elem.webkitIsFullScreen){
+
+  if((document.fullScreenElement && document.fullScreenElement !== null) || (!document.mozFullScreen && !document.webkitIsFullScreen)){
+    console.log('what')
      if (elem.requestFullScreen){
             elem.requestFullScreen();
         }
@@ -288,19 +301,19 @@ function togglescreen(elem){
             elem.msRequestFullscreen();
         }
   }
-  else
+  else 
     {
-        if (elem.cancelFullScreen){
-           elem.cancelFullScreen();
+        if (document.cancelFullScreen){
+           document.cancelFullScreen();
         }
-        else if (elem.mozCancelFullScreen){ /* Firefox */
-            elem.mozCancelFullScreen();
+        else if (document.mozCancelFullScreen){ /* Firefox */
+            document.mozCancelFullScreen();
         }
-        else if (elem.webkitCancelFullScreen){   /* Chrome, Safari and Opera */
-            elem.webkitCancelFullScreen();
+        else if (document.webkitCancelFullScreen){   /* Chrome, Safari and Opera */
+            document.webkitCancelFullScreen();
         }
-        else if (elem.msExitFullscreen){ /* IE/Edge */
-            elem.msExitFullscreen();
+        else if (document.msExitFullscreen){ /* IE/Edge */
+            document.msExitFullscreen();
         }
     }
 
@@ -376,7 +389,6 @@ else browser_name = 'other-browser';
 
 return browser_name;
 }
-
 
 
 
