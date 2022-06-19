@@ -1,43 +1,96 @@
-   let constraints,stream,previous_URL,strem;
+  
+   let stream,previous_URL,strem;
+   const video_container = document.querySelector('#video_container')
   const record_button = document.querySelector('#record_button');
   const parent_of_record_button = document.querySelector('#container_of_record_button')
   const toggle_button = document.querySelector('i.fas.fa-expand');
   const screen_capture_button = document.querySelector('#screen_capture_button')
-  const cursor_checkbox = document.querySelector('#cursor_checkbox')
+  const full_screen_button = document.querySelector('#full_screen_button')
+  const cursor_checkbox = document.querySelector('#cursor_checkbox');
+  const setting_button = document.querySelector('#setting_button')
+  const screen_shot_button = document.querySelector('#screenshot_button')
+ const tooltip = document.querySelector('.tooltip')
    //the default value for displaying cursor is always 
-  let is_display_cursor = "always"
- constraints = { audio: false, video: { width: 1200, height: 720 } };
-
- const microphone_button = document.querySelector('#microphone > button')
+  let is_display_cursor = "always";
+let tooltip_visible = false
+setting_button.addEventListener('mouseover',function(){
+    setting_button.style.transform = "rotate(60deg)";
+    setting_button.style.transition = 'transform 0.3s'
+})
+setting_button.addEventListener('mouseout',function(){
+    setting_button.style.transform = "rotate(0deg)";
+    setting_button.style.transition = 'transform 0.3s'
+})
+setting_button.addEventListener('click',function(){
+    console.log('what')
+    if(!tooltip_visible){
+    tooltip.style.visibility = 'visible'
+    tooltip.querySelector('button').style.visibility = 'visible'
+    tooltip_visible = true;
+    document.addEventListener("click",check_tool_tip);
+ }else{
+     tooltip.style.visibility = 'hidden'
+     //button has transition so we need to separetly immediately hide them
+         tooltip.querySelector('button').style.visibility = 'hidden'
+    tooltip_visible = false;
+    document.removeEventListener("click",check_tool_tip)
+ }
+})
+function check_tool_tip(event){
+    if(tooltip_visible && event.target.id !== "setting_button" ){
+    tooltip.style.visibility = 'hidden'
+    tooltip.querySelector('button').style.visibility = 'hidden'
+    } 
+}
  let video_recording;
 
   const preview_video = document.querySelector('#preview')
 
+tooltip.querySelector('#microphone > button').addEventListener('click',function(event){
+    const i_icon = document.querySelector('#microphone i')
 
+    if(i_icon.classList.contains('button_active')) audio_on = false
+    else audio_on = true
 
-microphone_button.addEventListener('click',function(){
-    const i_icon = microphone_button.querySelector('i')
-    if(i_icon.classList.contains('button_active'))
-        i_icon.classList.remove('button_active')
-    else i_icon.classList.add('button_active')
+    i_icon.classList.toggle('button_active')
 })
+
+tooltip.querySelector('#mirror_mode > button').addEventListener('click',function(event){
+
+    const i_icon = document.querySelector('#mirror_mode i')
+
+    if(i_icon.classList.contains('button_active'))
+        preview_video.style.transform = 'initial'
+
+    else
+       preview_video.style.transform = 'scaleX(-1)'
+    
+    i_icon.classList.toggle('button_active')
+})
+let audio_on = true
 /* 
 ask for user permissin first to prevent future asking 
-
 */
-/*window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', () => {
     navigator.mediaDevices.getUserMedia({
       audio:true,
       video:true,
-    });
+    }).then(media =>{
+        media.getTracks().forEach(device =>{
+
+            if(device.kind === 'audio') document.querySelector('#microphone li').textContent = device.label;
+            else document.querySelector('#camera li').textContent = device.label;
+
+        })
+    })
     const script = document.createElement('script')
     script.src = 'https://kit.fontawesome.com/44f674442e.js'
-    script.onload =>{
+    script.onload = ()=>{
         screen_capture_button.style.visibility = 'visible';
         toggle_button.style.visibility = 'visible'
     
     }
-});*/
+});
 
 
 cursor_checkbox.addEventListener('click',function(){
@@ -45,14 +98,47 @@ cursor_checkbox.addEventListener('click',function(){
     else is_display_cursor = 'none'
 })
 
+document.addEventListener('fullscreenchange', change_screen_event, false);
+ document.addEventListener('mozfullscreenchange', change_screen_event, false);
+ document.addEventListener('MSFullscreenChange', change_screen_event, false);
+ document.addEventListener('webkitfullscreenchange', change_screen_event, false);
 
+
+
+let in_full_screen = false
+full_screen_button.addEventListener('click',function(){
+    change_screen_event()
+    togglescreen(video_container);
+
+    if(in_full_screen) in_full_screen = false
+
+})
+
+function change_screen_event(){
+    const root = document.querySelector(':root')
+    if(!in_full_screen){
+       
+        root.style.setProperty("--width",'100vw')
+        root.style.setProperty("--height","100vh")
+        full_screen_button.classList.add('full_screen_button_full_screen')
+        screen_shot_button.classList.add('screenshot_button_full_screen')
+        setting_button.classList.add("setting_button_full_screen")
+        //full_screen_button.style.right = '5vw'
+        in_full_screen = true
+    }else{
+         root.style.setProperty("--width","654px")
+
+        root.style.setProperty("--height","500px")
+        in_full_screen = false
+        full_screen_button.classList.remove('full_screen_button_full_screen')
+        screen_shot_button.classList.remove('screenshot_button_full_screen')
+        setting_button.classList.remove("setting_button_full_screen")
+    }
+}
 window.addEventListener('load',function(){
-navigator.mediaDevices.getUserMedia(constraints)
+navigator.mediaDevices.getUserMedia({ audio: false, video: { width: 1200, height: 720 } })
 .then(function(mediaStream) {
 
-   //console.console.log(MediaStreamTrack.getConstraints())
-      console.log(mediaStream.getTracks())
-  //.map( (track) => console.console.log(track.getSettings()));
   stream = mediaStream;
 
   preview_video.srcObject = mediaStream; 
@@ -67,7 +153,6 @@ screen_capture_button.addEventListener('click',function(){
     take_screen_shot()
 })
 parent_of_record_button.addEventListener('click',function(){
-    console.log('what')
     if(!record_button.classList.contains('active')){
         record_button.classList.add('active');
         start_video();
@@ -78,10 +163,13 @@ parent_of_record_button.addEventListener('click',function(){
 })
 
 function start_video(){
-   video_recording = new MediaRecorder(stream,{
-    mimeType: "video/webm",
-  })
-   let data = [];
+    console.log(audio_on)
+    navigator.mediaDevices.getUserMedia({ audio: audio_on, video: { width: 1200, height: 720 } })
+    .then(stream =>{
+    video_recording = new MediaRecorder(stream,{
+    mimeType: "video/webm"
+})
+      let data = [];
   video_recording.ondataavailable = event =>{
     data.push(event.data)
     create_video(event.data, "untitle.webm")
@@ -89,9 +177,14 @@ function start_video(){
     convertStreams(new Blob([event.data], {
     type: "video/x-matroska;codecs=avc1"
 }))
-    
-   } 
-  video_recording.start();
+    console.log(new Blob([event.data], {
+    type: "video/x-matroska;codecs=avc1"
+}))
+}
+ video_recording.start();
+  })
+   
+ 
 }
 
 
@@ -283,3 +376,20 @@ else browser_name = 'other-browser';
 
 return browser_name;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
